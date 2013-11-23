@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>RSS Mixer</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.0.1/flatly/bootstrap.min.css"/>
+        <!-- <link rel="stylesheet" href="css/foundation.min.css"/> -->
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/master.css">
+        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <div class="jumbotron login-div">
+            <div class="form-group">
+                <h1>RSS Mixer</h1>
+                <label class="control-label" for="username-input">Username</label>
+                <input class="form-control" id="username-input" type="TEXT" placeholder="Username"></input>
+                <label class="control-label" for="password-input">Password</label>
+                <input class="form-control" id="password-input" type="PASSWORD" placeholder="Password"></input>
+                <button class="btn btn-primary" id="login-btn">Login</button>
+                <button class="btn btn-default" id="signup-btn">Create account & Login</button>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="fixed-top">
+                <h2 id="username-text" class="text-left">#username</h2>
+                <div class="row form-group">
+                    <div class="col-sm-12 col-md-10">
+                        <input type="url" class="form-control" id="feed-input" placeholder="RSS feed address..."></input>
+                    </div>
+                    <div class="col-xs-6 col-md-1">
+                        <button class="btn btn-default" id="add-feed-btn">Add</button>
+                    </div>
+                    <div class="col-xs-6 col-md-1">
+                        <button class="btn btn-primary" id="feeds-btn">Feeds</button>
+                    </div>
+                </div>
+                <div class="row">
+                </div>
+            </div>
+            <div class="infinite-scroll" id="news-div">
+            </div>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/jquery.jscroll.min.js"></script>
+        <script src="js/foundation.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+        <script src="js/md5-min.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>

@@ -1,0 +1,61 @@
+a, a:hover {
+    text-decoration: none;
+}
+
+.empty-div {
+    height: 20px;
+}
+
+.login-div {
+    position: absolute;
+    width: 60%;
+
+    top: 5%;
+    left: 20%;
+    right: 20%;
+
+    margin: auto;
+
+    border-radius: 6px;
+}
+
+.dashboard {
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    background-color: white;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 100%;
+    margin: auto;
+}
+
+div#news-div {
+    position: absolute;
+    width: 96%;
+    top: 130px;
+    left: 2%;
+    margin: auto;
+}
+
+button#add-feed-btn, button#feeds-btn {
+    min-width: 100%;
+}
+
+.fixed-top {
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    margin: auto;
+    z-index: 1;
+}
+
+.delete-btn {
+    font-size: small;
+    padding: 2px;
+    margin-top: 5px;
+}

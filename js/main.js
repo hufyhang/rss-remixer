@@ -2,12 +2,20 @@ $(function() {
     window.login = new Login($('#username-input'), $('#password-input'));
     window.user = undefined;
     window.feedParser = undefined;
+    setNewsDivTop();
     registerEvents();
 });
 
+function setNewsDivTop() {
+    var topHeight = $('.fixed-top').height();
+    var margin = 10;
+    var top = topHeight + margin;
+    $('#news-div').css('top', top.toString() + "px");
+}
+
 function registerEvents() {
     $('#username-input').focus();
-    
+
     $('#password-input').keydown(function(evt) {
         // if pressed enter
         if(evt.keyCode === 13) {
@@ -202,15 +210,21 @@ FeedParser.prototype.retrieveAll = function(newsDom) {
     this.newsDom.html('');
 
     var feeds = this.jsonObj['feeds'];
-    var that = this;
+    NProgress.start();
     for(var index = 0; index != feeds.length; ++index) {
         var rss = feeds[index].rss;
-        $.get('php/readXml.php', {
-            url: rss
-        }).done(function(data) {
-            that.parseXmlData(data);
-        });
+        this.doRetrieveAll(rss, index, feeds.length);
+        index + 1/feeds.length === 1 ? NProgress.done() : NProgress.set(index + 1/feeds.length);
     }
+};
+
+FeedParser.prototype.doRetrieveAll = function(rss, index, length) {
+    var that = this;
+    $.get('php/readXml.php', {
+        url: rss
+    }).done(function(data) {
+        that.parseXmlData(data);
+    });
 };
 
 FeedParser.prototype.retrieveFeeds = function(newsDom) {
@@ -218,14 +232,15 @@ FeedParser.prototype.retrieveFeeds = function(newsDom) {
     this.newsDom.html('');
 
     var feeds = this.jsonObj['feeds'];
-    var that = this;
+    NProgress.start();
     for(var index = 0; index != feeds.length; ++index) {
         var rss = feeds[index].rss;
-        this.doParseFeed(rss, index);
+        this.doParseFeed(rss, index, feeds.length);
+        index + 1/feeds.length === 1 ? NProgress.done() : NProgress.set(index + 1/feeds.length);
     }
 };
 
-FeedParser.prototype.doParseFeed = function(rss, index) {
+FeedParser.prototype.doParseFeed = function(rss, index, length) {
     var that = this;
     $.get('php/readXml.php', {
         url: rss

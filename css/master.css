@@ -2,6 +2,10 @@ a, a:hover {
     text-decoration: none;
 }
 
+.panel-heading>a:visited {
+    color: grey;
+}
+
 .empty-div {
     height: 20px;
 }

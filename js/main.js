@@ -43,14 +43,14 @@ function registerEvents() {
     });
 
     $('#feeds-btn').on('click', function() {
-        if($(this).html() === 'Feeds') {
-            $(this).html('All news');
-            window.user.showFeeds();
-        }
-        else {
-            $(this).html('Feeds');
-            window.user.fetchFeeds();
-        }
+        // if($(this).html() === 'Feeds') {
+        //     $(this).html('All news');
+        //     window.user.showFeeds();
+        // }
+        // else {
+        $(this).html('Feeds');
+        window.user.showFeeds();
+        // }
     });
 }
 

@@ -11,10 +11,15 @@ function setNewsDivTop() {
     var margin = 10;
     var top = topHeight + margin;
     $('#news-div').css('top', top.toString() + "px");
+    $('.white-div').css('height', topHeight.toString() + 'px');
 }
 
 function registerEvents() {
     $('#username-input').focus();
+
+    $(window).resize(function() {
+        setNewsDivTop();
+    });
 
     $('#password-input').keydown(function(evt) {
         // if pressed enter
@@ -37,7 +42,7 @@ function registerEvents() {
 
     $('#feeds-btn').on('click', function() {
         if($(this).html() === 'Feeds') {
-            $(this).html('News');
+            $(this).html('All news');
             window.user.showFeeds();
         }
         else {
@@ -73,7 +78,7 @@ Login.prototype.login = function () {
               if(data === 'OK\n') {
                   username = hex_md5(username);
                   window.user = new User(username);
-                  window.user.fetchFeeds();
+                  window.user.showFeeds();
                   $('.login-div').css('visibility', 'hidden').html('');
                   $('.dashboard').css('visibility', 'visible');
               }
@@ -155,10 +160,14 @@ User.prototype.fetchFeedByUrl = function(url) {
             {
                 url: url
             }).done(function(data) {
+                NProgress.start();
                 // !!!do not create new FeedParser instance!!!
                 $('#news-div').html('');
+                NProgress.set(0.2);
                 window.feedParser.parseXmlData(data);
+                NProgress.set(0.7);
                 $('#feeds-btn').html('Feeds');
+                NProgress.done();
             });
 };
 

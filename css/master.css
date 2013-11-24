@@ -43,6 +43,16 @@ button#add-feed-btn, button#feeds-btn {
     min-width: 100%;
 }
 
+.white-div {
+    background-color: white;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
 .fixed-top {
     /* background-color: rgba(255, 255, 255, 0.9); */
     background-color: white;
@@ -51,7 +61,7 @@ button#add-feed-btn, button#feeds-btn {
     left: 10%;
     right: 10%;
     margin: auto;
-    z-index: 1;
+    z-index: 2;
 }
 
 .delete-btn {

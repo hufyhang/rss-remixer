@@ -69,3 +69,8 @@ button#add-feed-btn, button#feeds-btn {
     padding: 2px;
     margin-top: 5px;
 }
+
+.feed-title-span {
+    float: right;
+}
+

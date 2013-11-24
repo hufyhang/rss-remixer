@@ -1,4 +1,6 @@
 $(function() {
+    window.UNIX_TIME_PER_DAY = 86400;
+    window.DEFAULT_LOADS = 25;
     window.login = new Login($('#username-input'), $('#password-input'));
     window.user = undefined;
     window.feedParser = undefined;
@@ -155,7 +157,7 @@ User.prototype.fetchFeeds = function() {
             });
 };
 
-User.prototype.fetchFeedByUrl = function(url) {
+User.prototype.fetchFeedByUrl = function(url, loadAll) {
     $.get('php/readXml.php',
             {
                 url: url
@@ -164,7 +166,7 @@ User.prototype.fetchFeedByUrl = function(url) {
                 // !!!do not create new FeedParser instance!!!
                 $('#news-div').html('');
                 NProgress.set(0.2);
-                window.feedParser.parseXmlData(data);
+                window.feedParser.parseXmlData(url, data, loadAll, false);
                 NProgress.set(0.7);
                 $('#feeds-btn').html('Feeds');
                 NProgress.done();
@@ -192,12 +194,7 @@ User.prototype.addFeed = function(url) {
                 url: url
             }).done(function(data) {
                 if(data === 'OK\n') {
-                    if($('#feeds-btn').html() === 'Feeds') {
-                        window.user.fetchFeeds();
-                    }
-                    else {
-                        window.user.showFeeds();
-                    }
+                    window.user.fetchFeedByUrl(url, false);
                 }
                 else  {
                     console.log('Error: Cannot add feed: ' + url + '\nError Information:\n' + data);
@@ -232,7 +229,7 @@ FeedParser.prototype.doRetrieveAll = function(rss, index, length) {
     $.get('php/readXml.php', {
         url: rss
     }).done(function(data) {
-        that.parseXmlData(data);
+        that.parseXmlData(rss, data, false, true);
     });
 };
 
@@ -258,17 +255,34 @@ FeedParser.prototype.doParseFeed = function(rss, index, length) {
     });
 };
 
-FeedParser.prototype.parseXmlData = function(xmlString) {
+FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadingAllNews) {
+    var timestamp = new Date().getTime();
     var that = this;
     var xml = $.parseXML(xmlString),
         $xml = $(xml);
+    var counter = 0;
     $xml.find('rss').find('channel').find('item').each(function() {
-        var buffer = '<div class="row"><a href="' + $(this).find('link').text() + '" target="_blank"><div class="panel panel-default"><div class="panel-heading">';
-        buffer += '<b>' + $(this).find('title').text() + '</b></div>';
-        buffer += '<div class="panel-body">Published: ' + $(this).find('pubDate').text() + '<br/><br/>' + $(this).find('description').text() + '</div>';
-        buffer += '</div></div></a></div>';
+        ++counter;
+        if(loadAll === false && counter >= window.DEFAULT_LOADS) {
+            return false;
+        }
+
+        var pubDate = $(this).find('pubDate').text();
+
+        var buffer = '<div class="row"><div class="panel panel-default"><div class="panel-heading">';
+        buffer += '<a href="' + $(this).find('link').text() + '" target="_blank"><b>' + $(this).find('title').text() + '</b></a><span class="feed-title-span"><a target="_blank" href="' + $xml.find('rss').find('channel').find('link').first().text() + '">' + $xml.find('rss').find('channel').find('title').first().text()  + '</a></span></div>';
+        buffer += '<div class="panel-body">' + pubDate + '<br/><br/>' + $(this).find('description').text() + '</div>';
+        buffer += '</div></div></div>';
         that.newsDom.html(that.newsDom.html() + buffer);
     });
+
+    if(loadAll === false && loadingAllNews === false) {
+        var html = '<div class="row"><div class="load-all-div well text-center">Load all news.</div></div>';
+        that.newsDom.html(that.newsDom.html() + html);
+        $('.load-all-div').css('cursor', 'pointer').on('click', function() {
+            window.user.fetchFeedByUrl(feedUrl, true);
+        });
+    }
 };
 
 FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
@@ -276,9 +290,9 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
     var xml = $.parseXML(xmlString),
         $xml = $(xml);
     var channel = $xml.find('rss').find('channel');
-    var buffer = '<div class="row" id="feed-row-' + index + '"><div id="feed-panel-' + index + '" class="panel panel-info" ><div class="panel-heading" onclick="window.user.fetchFeedByUrl(\'' + feedUrl + '\');">';
+    var buffer = '<div class="row" id="feed-row-' + index + '"><div id="feed-panel-' + index + '" class="panel panel-info" ><div class="panel-heading" onclick="window.user.fetchFeedByUrl(\'' + feedUrl + '\', false);">';
     buffer += '<b>' + channel.find('title').first().text() + '</b></div>';
-    buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Remove</button></div>';
+    buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Unsubscribe</button></div>';
     buffer += '</div></div></div>';
     that.newsDom.html(that.newsDom.html() + buffer);
 

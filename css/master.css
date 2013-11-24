@@ -48,7 +48,7 @@ button#add-feed-btn, button#feeds-btn {
 }
 
 .white-div {
-    background-color: white;
+    background-color: rgba(255, 255, 252, 0.8);
     position: fixed;
     width: 100%;
     top: 0;
@@ -58,8 +58,6 @@ button#add-feed-btn, button#feeds-btn {
 }
 
 .fixed-top {
-    /* background-color: rgba(255, 255, 255, 0.9); */
-    background-color: white;
     position: fixed;
     top: 0;
     left: 10%;

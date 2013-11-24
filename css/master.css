@@ -8,7 +8,7 @@ a, a:hover {
     text-decoration: none;
 }
 
-.panel-heading>a:visited {
+.panel-heading a:visited {
     color: grey;
 }
 

@@ -52,6 +52,7 @@ function registerEvents() {
         window.user.showFeeds();
         // }
     });
+
 }
 
 function Login(usernameDom, passwordDom) {
@@ -261,17 +262,51 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
     var xml = $.parseXML(xmlString),
         $xml = $(xml);
     var counter = 0;
-    $xml.find('rss').find('channel').find('item').each(function() {
+
+
+    var items,
+        pubDateTag = '',
+        descriptTag = '',
+        channelLink,
+        channelTitle;
+    if((items = $xml.find('rss').find('channel').find('item')).length !== 0) { //default rss
+        pubDateTag = 'pubDate';
+        descriptTag = 'description';
+        channelTitle = $xml.find('rss').find('channel').find('title').first().text()
+        channelLink = $xml.find('rss').find('channel').find('link').first().text()
+    }
+    else if((items = $xml.find('feed').find('entry')).length !== 0) { //default atom
+        pubDateTag = items.find('updated').length !== 0 ? 'updated' : 'modified';
+        descriptTag = items.find('summary').length !== 0 ? 'summary' : 'content';
+        channelTitle = $xml.find('feed').find('title').first().text();
+        channelLink = $xml.find('feed').find('link').first().text().length !== 0 ? $xml.find('feed').find('link').first().text() : $xml.find('feed').find('link').first().attr('href');
+    }
+    else { //bad structured feed
+        items = $xml.find('entry');
+        pubDateTag = items.find('updated').length !== 0 ? 'updated' : 'modified';
+        descriptTag = items.find('summary').length !== 0 ? 'summary' : 'content';
+        channelTitle = $xml.find('title').first().text();
+        channelLink = $xml.find('link').first().attr('href');
+    }
+
+    items.each(function() {
         ++counter;
         if(loadAll === false && counter >= window.DEFAULT_LOADS) {
             return false;
         }
 
-        var pubDate = $(this).find('pubDate').text();
+        var pubDate = $(this).find(pubDateTag).text();
+        var newsLink = $(this).find('link').text().length !== 0 ? $(this).find('link').text() : $(this).find('link').attr('href');
 
         var buffer = '<div class="row"><div class="panel panel-default"><div class="panel-heading">';
-        buffer += '<a href="' + $(this).find('link').text() + '" target="_blank"><b>' + $(this).find('title').text() + '</b></a><span class="feed-title-span"><a target="_blank" href="' + $xml.find('rss').find('channel').find('link').first().text() + '">' + $xml.find('rss').find('channel').find('title').first().text()  + '</a></span></div>';
-        buffer += '<div class="panel-body">' + pubDate + '<br/><br/>' + $(this).find('description').text() + '</div>';
+        if(newsLink.length !== 0) {
+            buffer += '<a href="' + newsLink + '" target="_blank"><b>' + $(this).find('title').text() + '</b></a>';
+        }
+        else {
+            buffer += '<b>' + $(this).find('title').text() + '</b>';
+        }
+        buffer += '<span class="feed-title-span"><a target="_blank" href="' + channelLink + '">' + channelTitle  + '</a></span></div>';
+        buffer += '<div class="panel-body">' + pubDate + '<br/><br/>' + $(this).find(descriptTag).text() + '</div>';
         buffer += '</div></div></div>';
         that.newsDom.html(that.newsDom.html() + buffer);
     });
@@ -289,11 +324,33 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
     var that = this;
     var xml = $.parseXML(xmlString),
         $xml = $(xml);
-    var channel = $xml.find('rss').find('channel');
+
+    var channel,
+        title = '',
+        description = '';
+    if((channel = $xml.find('rss').find('channel')).length !== 0) { //default rss
+        title = channel.find('title').first().text();
+        description = channel.find('description').first().text(); //default atom
+    }
+    else if((channel = $xml.find('feed')).length !== 0) {
+        title = channel.find('title').first().text();
+        description = channel.find('subtitle').first().text();
+    }
+    else { //bad structured feed
+        title = $xml.find('title').first().text();
+        description = $xml.find('subtitle').first().text();
+    }
+
     var buffer = '<div class="row" id="feed-row-' + index + '"><div id="feed-panel-' + index + '" class="panel panel-info" ><div class="panel-heading" onclick="window.user.fetchFeedByUrl(\'' + feedUrl + '\', false);">';
     buffer += '<b>' + channel.find('title').first().text() + '</b></div>';
-    buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Unsubscribe</button></div>';
+    if(description.length !== 0) {
+        buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Unsubscribe</button></div>';
+    }
+    else {
+        buffer += '<div class="panel-body"><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Unsubscribe</button></div>';
+    }
     buffer += '</div></div></div>';
+
     that.newsDom.html(that.newsDom.html() + buffer);
 
     $('#news-div>.row>.panel>.panel-heading').css('cursor', 'pointer');

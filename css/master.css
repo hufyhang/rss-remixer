@@ -78,3 +78,19 @@ button#add-feed-btn, button#feeds-btn {
     float: right;
 }
 
+.stacks-container {
+    background-color: rgba(192, 192, 192, 0.6);
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    width: 80%;
+    top: 10%;
+    left: 10%;
+    right: 10%;
+    margin: auto;
+}
+
+.stacks-container button {
+    min-width: 100%;
+}
+

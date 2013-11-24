@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "FF Tisa";
+  font-weight: 400;
+  src: url("http://cdn1.tnwcdn.com/fonts/ff-tisa.eot?#iefix") format("embedded-opentype"), url("http://cdn1.tnwcdn.com/fonts/ff-tisa.woff") format("woff"), url("http://cdn1.tnwcdn.com/fonts/ff-tisa.ttf") format("truetype");
+}
+
 a, a:hover {
     text-decoration: none;
 }
@@ -93,6 +99,20 @@ button#add-feed-btn, button#feeds-btn {
 }
 
 .publish-date-div {
+    color: grey;
+}
+
+.dashboard .panel-body {
+    font-family: "FF Tisa";
+    font-size: 1.1em;
+    rgb(78, 88, 96);
+}
+
+.panel-body button {
+    font-family: "Lato","Helvetica Neue","Helvetica","Arial","sans-serif";
+}
+
+.load-all-div {
     color: grey;
 }
 

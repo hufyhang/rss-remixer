@@ -313,7 +313,7 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
     });
 
     if(loadAll === false && loadingAllNews === false) {
-        var html = '<div class="row"><div class="load-all-div well text-center">Load all news.</div></div>';
+        var html = '<div class="row"><div class="load-all-div well text-center">Load all news</div></div>';
         that.newsDom.html(that.newsDom.html() + html);
         $('.load-all-div').css('cursor', 'pointer').on('click', function() {
             window.user.fetchFeedByUrl(feedUrl, true);
@@ -345,7 +345,7 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
     var buffer = '<div class="row" id="feed-row-' + index + '"><div id="feed-panel-' + index + '" class="panel panel-info" ><div class="panel-heading" onclick="window.user.fetchFeedByUrl(\'' + feedUrl + '\', false);">';
     buffer += '<b>' + channel.find('title').first().text() + '</b></div>';
     if(description.length !== 0) {
-        buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Unsubscribe</button></div>';
+        buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     else {
         buffer += '<div class="panel-body"><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Unsubscribe</button></div>';

@@ -126,3 +126,13 @@ button#add-feed-btn, button#feeds-btn {
     max-width: 100%;
 }
 
+.hide-btn {
+    float: right;
+    cursor: pointer;
+    color: white;
+}
+
+.hide-btn:hover {
+    color: grey;
+}
+

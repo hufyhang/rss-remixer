@@ -79,7 +79,6 @@ Login.prototype.login = function () {
             {username: username, password: password}
           ).done(function(data) {
               if(data === 'OK\n') {
-                  username = hex_md5(username);
                   window.user = new User(username);
                   window.user.showFeeds();
                   $('.login-div').css('visibility', 'hidden').html('');
@@ -122,10 +121,19 @@ Login.prototype.signup = function() {
             });
 };
 
-function User(username) {
-    this.username = username;
+function User(rawName) {
+    this.rawName = rawName;
+    this.username = hex_md5(this.rawName);
     this.feeds = [];
 }
+
+User.prototype.getRawname = function() {
+    return this.rawName;
+};
+
+User.prototype.getUsername = function() {
+    return this.username;
+};
 
 User.prototype.removeFeed = function(index, rss) {
     var that = this;
@@ -175,6 +183,7 @@ User.prototype.fetchFeedByUrl = function(url, loadAll) {
 };
 
 User.prototype.showFeeds = function() {
+    $('#username-text').html('#' + window.user.getRawname());
     var that = this;
     $.get('php/fetchFeeds.php',
             {
@@ -299,18 +308,21 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
         pubDate = moment(pubDate).startOf('minutes').fromNow();
         var newsLink = $(this).find('link').text().length !== 0 ? $(this).find('link').text() : $(this).find('link').attr('href');
 
-        var buffer = '<div class="row"><div class="panel panel-default"><div class="panel-heading">';
+        var buffer = '<div class="row"><div class="panel panel-default"><div class="panel-heading"><div class="row"><div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">';
         if(newsLink.length !== 0) {
             buffer += '<a href="' + newsLink + '" target="_blank"><b>' + $(this).find('title').text() + '</b></a>';
         }
         else {
             buffer += '<b>' + $(this).find('title').text() + '</b>';
         }
-        buffer += '<span class="feed-title-span"><a target="_blank" href="' + channelLink + '">' + channelTitle  + '</a></span></div>';
+        buffer += '</div><div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-right"><span class="hide-btn label label-default" onclick="$(this).parent().parent().parent().parent().parent().html(\'\');">x</span></div></div></div>';
         buffer += '<div class="panel-body"><div class="row"><div class="col-xs-12 col-sm-10 col-md-10 col-centered"><div class="publish-date-div">' + pubDate + '</div>' + $(this).find(descriptTag).text() + '</div></div></div>';
         buffer += '</div></div></div>';
         that.newsDom.html(that.newsDom.html() + buffer);
+
+        $('#username-text').html('#' + window.user.getRawname() + ' - ' + channelTitle);
     });
+
 
     if(loadAll === false && loadingAllNews === false) {
         var html = '<div class="row"><div class="load-all-div well text-center">Load all news</div></div>';

@@ -296,6 +296,7 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
         }
 
         var pubDate = $(this).find(pubDateTag).text();
+        pubDate = moment(pubDate).startOf('minutes').fromNow();
         var newsLink = $(this).find('link').text().length !== 0 ? $(this).find('link').text() : $(this).find('link').attr('href');
 
         var buffer = '<div class="row"><div class="panel panel-default"><div class="panel-heading">';
@@ -306,7 +307,7 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
             buffer += '<b>' + $(this).find('title').text() + '</b>';
         }
         buffer += '<span class="feed-title-span"><a target="_blank" href="' + channelLink + '">' + channelTitle  + '</a></span></div>';
-        buffer += '<div class="panel-body">' + pubDate + '<br/><br/>' + $(this).find(descriptTag).text() + '</div>';
+        buffer += '<div class="panel-body"><div class="publish-date-div">' + pubDate + '</div>' + $(this).find(descriptTag).text() + '</div>';
         buffer += '</div></div></div>';
         that.newsDom.html(that.newsDom.html() + buffer);
     });

@@ -307,7 +307,7 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
             buffer += '<b>' + $(this).find('title').text() + '</b>';
         }
         buffer += '<span class="feed-title-span"><a target="_blank" href="' + channelLink + '">' + channelTitle  + '</a></span></div>';
-        buffer += '<div class="panel-body"><div class="publish-date-div">' + pubDate + '</div>' + $(this).find(descriptTag).text() + '</div>';
+        buffer += '<div class="panel-body"><div class="row"><div class="col-xs-12 col-sm-10 col-md-10 col-centered"><div class="publish-date-div">' + pubDate + '</div>' + $(this).find(descriptTag).text() + '</div></div></div>';
         buffer += '</div></div></div>';
         that.newsDom.html(that.newsDom.html() + buffer);
     });
@@ -348,7 +348,7 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
         buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     else {
-        buffer += '<div class="panel-body"><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">Unsubscribe</button></div>';
+        buffer += '<div class="panel-body"><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     buffer += '</div></div></div>';
 

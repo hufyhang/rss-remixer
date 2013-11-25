@@ -345,7 +345,7 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
         title = '',
         description = '';
     if((channel = $xml.find('rss').find('channel')).length !== 0) { //default rss
-        root = $xml.find('rss');
+        root = channel;
         title = channel.find('title').first().text();
         description = channel.find('description').first().text(); //default atom
     }
@@ -371,7 +371,7 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
         buffer += '<div class="panel-body">' + updateDate + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     else {
-        buffer += '<div class="panel-body"><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
+        buffer += '<div class="panel-body">' + updateDate + '<button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     buffer += '</div></div></div>';
 

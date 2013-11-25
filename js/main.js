@@ -8,9 +8,43 @@ $(function() {
     window.login = new Login($('#username-input'), $('#password-input'));
     window.user = undefined;
     window.feedParser = undefined;
+    window.stacksClient = new Stacks();
     setNewsDivTop();
     registerEvents();
 });
+
+function Stacks() {
+    this.title = '';
+    this.url = '';
+}
+
+Stacks.prototype.showStacks = function(title, url) {
+    this.title = title;
+    this.url = url;
+    var that = this;
+    $('.stacks-container').css('visibility', 'visible');
+    $('#stacks-recipient-input').focus();
+};
+
+Stacks.prototype.sendToStacks = function(recipient, msg) {
+    msg = msg.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/\n/g, '<br/>')
+    var importance = 'Important';
+    var now = new Date();
+    var time = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    msg = f23.s52e(msg);
+    var md5 = hex_md5(time + window.user.getRawname() + recipient);
+    $.post('php/send.php', {
+        sender: window.user.getRawname(),
+        recipient: recipient,
+        importance: importance,
+        message: msg,
+        md5: md5,
+        timestamp: time
+    }).done(function() {
+        $('#stacks-recipient-input').val('');
+        $('.stacks-container').css('visibility', 'hidden');
+    });
+};
 
 function setNewsDivTop() {
     var topHeight = $('.fixed-top').height();
@@ -25,6 +59,27 @@ function registerEvents() {
 
     $(window).resize(function() {
         setNewsDivTop();
+    });
+
+    $('#stacks-send-btn').on('click', function() {
+        var recipient = $('#stacks-recipient-input').val();
+        if(recipient.length === 0) {
+            return;
+        }
+        var msg = 'I would like to recommend the news feed: "' + window.stacksClient.title + '" to you.\nThe subscription address is: ' + window.stacksClient.url + '\n\nMessage send from RSS Mixer (http://feifeihang.info/rss)';
+        window.stacksClient.sendToStacks(recipient, msg);
+    });
+
+    $('#stacks-close-btn').on('click', function() {
+        $('#stacks-recipient-input').val('');
+        $('.stacks-container').css('visibility', 'hidden');
+    });
+
+    $('#stacks-recipient-input').keydown(function(evt) {
+        // if pressed enter
+        if(evt.keyCode === 13) {
+            $('#stacks-send-btn').click();
+        }
     });
 
     $('#password-input').keydown(function(evt) {
@@ -394,6 +449,7 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
         title = $xml.find('title').first().text();
         description = $xml.find('subtitle').first().text();
     }
+    title = title.trim();
 
     var updateDate = '';
 
@@ -404,10 +460,10 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
     var buffer = '<div class="row" id="feed-row-' + index + '"><div id="feed-panel-' + index + '" class="panel panel-info" ><div class="panel-heading" onclick="window.user.fetchFeedByUrl(\'' + feedUrl + '\', false);">';
     buffer += '<b>' + channel.find('title').first().text() + '</b></div>';
     if(description.length !== 0) {
-        buffer += '<div class="panel-body">' + updateDate + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
+        buffer += '<div class="panel-body">' + updateDate + channel.find('description').first().text() + '<br/><button class="btn btn-success stacks-btn" onclick="window.stacksClient.showStacks(\'' + title + '\', \'' + feedUrl + '\');">Share via Lock Stacks</button><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     else {
-        buffer += '<div class="panel-body">' + updateDate + '<button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
+        buffer += '<div class="panel-body">' + updateDate + '<button class="btn btn-success stacks-btn" onclick="window.stacksClient.showStacks(\'' + title + '\', \'' + feedUrl + '\');">Share via Lock Stacks</button><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     buffer += '</div></div></div>';
 

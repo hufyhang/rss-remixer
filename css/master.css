@@ -72,10 +72,11 @@ button#add-feed-btn, button#feeds-btn {
     z-index: 2;
 }
 
-.delete-btn {
+.delete-btn, .stacks-btn {
     font-size: small;
     padding: 2px;
     margin-top: 5px;
+    margin-right: 5px;
 }
 
 .feed-title-span {
@@ -83,12 +84,14 @@ button#add-feed-btn, button#feeds-btn {
 }
 
 .stacks-container {
-    background-color: rgba(192, 192, 192, 0.6);
+    visibility: hidden;
+    z-index: 3;
+    background-color: rgba(200, 200, 200, 0.9);
     border-radius: 6px;
     padding: 10px;
-    position: absolute;
+    position: fixed;
     width: 80%;
-    top: 10%;
+    top: 30%;
     left: 10%;
     right: 10%;
     margin: auto;
@@ -139,4 +142,5 @@ button#add-feed-btn, button#feeds-btn {
 .loading-div {
     color: grey;
 }
+
 

@@ -422,7 +422,7 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
     $('#news-div>.row>.panel>.panel-heading').css('cursor', 'pointer');
     $('#news-div>.row>.panel>.label').css('cursor', 'pointer');
 
-    if(window.feedsCounter === that.numberOfFeeds - 1) {
+    if(window.feedsCounter >= that.numberOfFeeds - 1) {
         $('#news-div .loading-div-row').html('');
 
         NProgress.done();

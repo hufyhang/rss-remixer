@@ -80,6 +80,9 @@ function registerEvents() {
         if(evt.keyCode === 13) {
             $('#stacks-send-btn').click();
         }
+        else if(evt.keyCode === 27) {
+            $('#stacks-close-btn').click();
+        }
     });
 
     $('#password-input').keydown(function(evt) {

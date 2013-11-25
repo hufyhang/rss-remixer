@@ -66,7 +66,7 @@ function registerEvents() {
         if(recipient.length === 0) {
             return;
         }
-        var msg = 'I would like to recommend the news feed: "' + window.stacksClient.title + '" to you.\nThe subscription address is: ' + window.stacksClient.url + '\n\nMessage send from RSS Mixer (http://feifeihang.info/rss)';
+        var msg = 'I would like to recommend the news feed "' + window.stacksClient.title + '" to you.\nThe subscription address is: ' + window.stacksClient.url + '\n\nMessage send from RSS Mixer (http://feifeihang.info/rss)';
         window.stacksClient.sendToStacks(recipient, msg);
     });
 

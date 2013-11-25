@@ -1,6 +1,8 @@
 $(function() {
     window.UNIX_TIME_PER_DAY = 86400;
     window.DEFAULT_LOADS = 25;
+    window.FEED_LAST_UPDATED = 'updated, modified, lastBuildDate, pubDate';
+
     window.login = new Login($('#username-input'), $('#password-input'));
     window.user = undefined;
     window.feedParser = undefined;
@@ -339,13 +341,16 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
         $xml = $(xml);
 
     var channel,
+        root,
         title = '',
         description = '';
     if((channel = $xml.find('rss').find('channel')).length !== 0) { //default rss
+        root = $xml.find('rss');
         title = channel.find('title').first().text();
         description = channel.find('description').first().text(); //default atom
     }
     else if((channel = $xml.find('feed')).length !== 0) {
+        root = $xml.find('feed');
         title = channel.find('title').first().text();
         description = channel.find('subtitle').first().text();
     }
@@ -354,10 +359,16 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
         description = $xml.find('subtitle').first().text();
     }
 
+    var updateDate = '';
+
+    if((updateDate = root.find(FEED_LAST_UPDATED).first().text()).length !== 0) {
+        updateDate = '<div class="publish-date-div">' + moment(updateDate).startOf('minutes').fromNow() + '</div>';
+    }
+
     var buffer = '<div class="row" id="feed-row-' + index + '"><div id="feed-panel-' + index + '" class="panel panel-info" ><div class="panel-heading" onclick="window.user.fetchFeedByUrl(\'' + feedUrl + '\', false);">';
     buffer += '<b>' + channel.find('title').first().text() + '</b></div>';
     if(description.length !== 0) {
-        buffer += '<div class="panel-body">' + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
+        buffer += '<div class="panel-body">' + updateDate + channel.find('description').first().text() + '<br/><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
     }
     else {
         buffer += '<div class="panel-body"><button class="btn btn-danger delete-btn" onclick="window.user.removeFeed(' + index + ', \'' + feedUrl + '\');">unsubscribe</button></div>';
@@ -369,3 +380,4 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
     $('#news-div>.row>.panel>.panel-heading').css('cursor', 'pointer');
     $('#news-div>.row>.panel>.label').css('cursor', 'pointer');
 };
+

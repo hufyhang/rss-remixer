@@ -66,7 +66,7 @@ function Login(usernameDom, passwordDom) {
 Login.prototype.login = function () {
     var username = this.usernameDom.val();
     var password = this.passwordDom.val();
-    $('#username-text').html('#' + username);
+    // $('#username-text').html('#' + username);
 
     if(username.length === 0) {
         this.usernameDom.val('Invalid username');
@@ -185,7 +185,8 @@ User.prototype.fetchFeedByUrl = function(url, loadAll) {
 };
 
 User.prototype.showFeeds = function() {
-    $('#username-text').html('#' + window.user.getRawname());
+    // $('#username-text').html('#' + window.user.getRawname());
+    $('#feed-input').attr('placeholder', 'Feed address...');
     var that = this;
     $.get('php/fetchFeeds.php',
             {
@@ -200,6 +201,13 @@ User.prototype.showFeeds = function() {
 
 User.prototype.addFeed = function(url) {
     var that = this;
+    // validate the feed first
+    var validator = new FeedParser(undefined);
+    if(!validator.validate(url)) {
+        alert('Invalid feed resource.');
+        return;
+    }
+
     $.post('php/add.php', 
             {
                 username: that.username,
@@ -219,6 +227,26 @@ function FeedParser(json) {
     this.newsDom = undefined;
 }
 
+FeedParser.prototype.validate = function(url) {
+    var data = $.ajax({
+        url: 'php/readXml.php',
+        type: 'GET',
+        async: false,
+        data: {
+            url: url
+        }
+    }).responseText;
+    try{
+        var xml = $.parseXML(data);
+        var $xml = $(xml);
+    }
+    catch(err) {
+        console.log('Invalid feed resource: ' + url);
+        return false;
+    }
+    return $xml.find('rss, feed').length !== 0 ? true : false;
+};
+
 FeedParser.prototype.checkStatus = function() {
     return this.jsonObj.status === 'OK' ? true : false;
 };
@@ -234,6 +262,7 @@ FeedParser.prototype.retrieveAll = function(newsDom) {
         this.doRetrieveAll(rss, index, feeds.length);
         index + 1/feeds.length === 1 ? NProgress.done() : NProgress.set(index + 1/feeds.length);
     }
+    NProgress.done();
 };
 
 FeedParser.prototype.doRetrieveAll = function(rss, index, length) {
@@ -256,6 +285,7 @@ FeedParser.prototype.retrieveFeeds = function(newsDom) {
         this.doParseFeed(rss, index, feeds.length);
         index + 1/feeds.length === 1 ? NProgress.done() : NProgress.set(index + 1/feeds.length);
     }
+    NProgress.done();
 };
 
 FeedParser.prototype.doParseFeed = function(rss, index, length) {
@@ -322,7 +352,8 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
         buffer += '</div></div></div>';
         that.newsDom.html(that.newsDom.html() + buffer);
 
-        $('#username-text').html('#' + window.user.getRawname() + ' - ' + channelTitle);
+        // $('#username-text').html('#' + window.user.getRawname() + ' - ' + channelTitle);
+        $('#feed-input').attr('placeholder', channelTitle);
     });
 
 

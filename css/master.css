@@ -65,7 +65,7 @@ button#add-feed-btn, button#feeds-btn {
 
 .fixed-top {
     position: fixed;
-    top: 0;
+    top: 10px;
     left: 10%;
     right: 10%;
     margin: auto;

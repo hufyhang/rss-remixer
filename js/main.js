@@ -2,6 +2,8 @@ $(function() {
     window.UNIX_TIME_PER_DAY = 86400;
     window.DEFAULT_LOADS = 25;
     window.FEED_LAST_UPDATED = 'updated, modified, lastBuildDate, pubDate';
+    
+    window.feedsCounter = 0;
 
     window.login = new Login($('#username-input'), $('#password-input'));
     window.user = undefined;
@@ -185,6 +187,7 @@ User.prototype.fetchFeedByUrl = function(url, loadAll) {
 };
 
 User.prototype.showFeeds = function() {
+    window.feedsCounter = 0;
     // $('#username-text').html('#' + window.user.getRawname());
     $('#feed-input').attr('placeholder', 'Feed address...');
     var that = this;
@@ -225,6 +228,8 @@ User.prototype.addFeed = function(url) {
 function FeedParser(json) {
     this.jsonObj = json;
     this.newsDom = undefined;
+    this.numberOfFeeds = json !== undefined ? this.jsonObj.feeds.length : 0;
+    this.buffer = '';
 }
 
 FeedParser.prototype.validate = function(url) {
@@ -276,14 +281,14 @@ FeedParser.prototype.doRetrieveAll = function(rss, index, length) {
 
 FeedParser.prototype.retrieveFeeds = function(newsDom) {
     this.newsDom = newsDom;
-    this.newsDom.html('');
+    this.newsDom.html('<div class="row"><div class="well loading-div">Loading...</div></div>');
 
     var feeds = this.jsonObj['feeds'];
     NProgress.start();
     for(var index = 0; index != feeds.length; ++index) {
         var rss = feeds[index].rss;
         this.doParseFeed(rss, index, feeds.length);
-        index + 1/feeds.length === 1 ? NProgress.done() : NProgress.set(index + 1/feeds.length);
+        // index + 1/feeds.length === 1 ? NProgress.done() : NProgress.set(index + 1/feeds.length);
     }
     NProgress.done();
 };
@@ -406,9 +411,21 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
     }
     buffer += '</div></div></div>';
 
-    that.newsDom.html(that.newsDom.html() + buffer);
+    ++window.feedsCounter;
+    var percentage = window.feedsCounter / (that.numberOfFeeds - 1);
+    NProgress.set(percentage);
+    var progressInfo = '<div class="row loading-div-row"><div class="well loading-div">Loading... (' + percentage.toFixed(2)*100 + '%)<br/>' + title + '</div></div>';
+    that.buffer += buffer;
+
+    that.newsDom.html(progressInfo + that.buffer);
 
     $('#news-div>.row>.panel>.panel-heading').css('cursor', 'pointer');
     $('#news-div>.row>.panel>.label').css('cursor', 'pointer');
+
+    if(window.feedsCounter === that.numberOfFeeds - 1) {
+        $('#news-div .loading-div-row').html('');
+
+        NProgress.done();
+    }
 };
 

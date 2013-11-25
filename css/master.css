@@ -136,3 +136,7 @@ button#add-feed-btn, button#feeds-btn {
     color: grey;
 }
 
+.loading-div {
+    color: grey;
+}
+

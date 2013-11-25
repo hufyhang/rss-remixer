@@ -397,7 +397,7 @@ FeedParser.prototype.parseFeed = function(xmlString, feedUrl, index) {
 
     var updateDate = '';
 
-    if((updateDate = root.find(FEED_LAST_UPDATED).first().text()).length !== 0) {
+    if((updateDate = root.find('item, entry').find(FEED_LAST_UPDATED).first().text()).length !== 0) {
         updateDate = '<div class="publish-date-div">' + moment(updateDate).startOf('minutes').fromNow() + '</div>';
     }
 

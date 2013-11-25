@@ -318,7 +318,7 @@ FeedParser.prototype.parseXmlData = function(feedUrl, xmlString, loadAll, loadin
             buffer += '<b>' + $(this).find('title').text() + '</b>';
         }
         buffer += '</div><div class="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-right"><span class="hide-btn label label-default" onclick="$(this).parent().parent().parent().parent().parent().html(\'\');">x</span></div></div></div>';
-        buffer += '<div class="panel-body"><div class="row"><div class="col-xs-12 col-sm-10 col-md-10 col-centered"><div class="publish-date-div">' + pubDate + '</div>' + $(this).find(descriptTag).text() + '</div></div></div>';
+        buffer += '<div class="panel-body"><div class="row"><div class="col-xs-12 col-sm-9 col-md-9 col-centered"><div class="publish-date-div">' + pubDate + '</div>' + $(this).find(descriptTag).text() + '</div></div></div>';
         buffer += '</div></div></div>';
         that.newsDom.html(that.newsDom.html() + buffer);
 

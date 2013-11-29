@@ -66,7 +66,7 @@ function registerEvents() {
         if(recipient.length === 0) {
             return;
         }
-        var msg = 'I would like to recommend the news feed "' + window.stacksClient.title + '" to you.\nThe subscription address is: ' + window.stacksClient.url + '\n\nMessage send from RSS Mixer (http://feifeihang.info/rss)';
+        var msg = 'I would like to recommend the news feed "' + window.stacksClient.title + '" to you.\nThe subscription address is: ' + window.stacksClient.url + '\n\nMessage sent from RSS Mixer (http://feifeihang.info/rss)';
         window.stacksClient.sendToStacks(recipient, msg);
     });
 
@@ -262,6 +262,7 @@ User.prototype.showFeeds = function() {
 
 User.prototype.addFeed = function(url) {
     var that = this;
+    var url = $.trim(url);
     // validate the feed first
     var validator = new FeedParser(undefined);
     if(!validator.validate(url)) {

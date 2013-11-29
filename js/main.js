@@ -260,9 +260,9 @@ User.prototype.showFeeds = function() {
             });
 };
 
-User.prototype.addFeed = function(url) {
+User.prototype.addFeed = function(inputUrl) {
     var that = this;
-    var url = $.trim(url);
+    var url = $.trim(inputUrl);
     // validate the feed first
     var validator = new FeedParser(undefined);
     if(!validator.validate(url)) {
